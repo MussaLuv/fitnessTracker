@@ -13,6 +13,7 @@ bcrypt.hash(password, SALT_COUNT, function(err, hashedPassword) {
 });
 
 // inside of getUser({username, password})
+async function getUser({ username, password}) {
 const user = await getUserByUserName(username);
 const hashedPassword = user.password;
 
@@ -22,8 +23,8 @@ bcrypt.compare(password, hashedPassword, function(err, passwordsMatch) {
   } else {
     throw SomeError;
   }
-});
-
+})
+};
 
 module.exports = {
     createUser,
