@@ -23,3 +23,10 @@ bcrypt.compare(password, hashedPassword, function(err, passwordsMatch) {
     throw SomeError;
   }
 });
+
+
+module.exports = {
+    createUser,
+    getUser,
+    getUserByUsername
+}
