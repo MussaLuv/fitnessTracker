@@ -33,7 +33,8 @@ async function attachActivitiesToRoutines(routines) {
 async function getActivityById(id) {
     try {
         const { rows: [activity] } = await client.query(`
-        SELECT * FROM activities
+        SELECT * 
+        FROM activities
         WHERE id = $1
         `, [id])
 
@@ -47,7 +48,8 @@ async function getActivityById(id) {
 async function getAllActivities() {
     try {
         const { rows } = await client.query(`
-        SELECT * FROM activities
+        SELECT * 
+        FROM activities
         `);
 
         return rows;
