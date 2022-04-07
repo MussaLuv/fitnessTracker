@@ -1,25 +1,24 @@
-// create the express server here
-const { PORT = 3000 } = process.env;
+// create the server here
+
+require("dotenv").config();
+const PORT = 3000;
 const express = require("express");
-const server = express();
+const app = express();
 const apiRouter = require("./api");
-const { client } = require("./db");
-const morgan = require("morgan");
-server.use(morgan("dev"));
 
-server.use(express.json());
-
-server.use((req, res, next) => {
-  console.log("<____Body Logger START____>");
+app.use(express());
+app.use((req, res, next) => {
+  console.log("logger is starting up!!");
   console.log(req.body);
-  console.log("<_____Body Logger END_____>");
-
+  console.log("logger is ending now");
   next();
 });
-server.use("/api", apiRouter);
 
+app.use("./api", apiRouter);
+
+const client = require("./db/client");
 client.connect();
 
-server.listen(PORT, () => {
-  console.log("The server is up on port", PORT);
+app.listen(PORT, () => {
+  console.log("SERVER IS LISTENING!!");
 });
