@@ -20,7 +20,7 @@ async function createUser({ username, password }){
 // inside of getUser({username, password})
 async function getUser({username, password}){
   try {
-      const {rows: [user], } = await client.query(`
+      const {rows: [user] } = await client.query(`
       SELECT * 
       FROM users
       WHERE username = $1;
@@ -38,7 +38,7 @@ async function getUser({username, password}){
 
 async function getUserById(id){
   try{
-      const {rows: [user], } = await client.query(`
+      const {rows: [user] } = await client.query(`
       SELECT * 
       FROM users
       WHERE id = $1;
@@ -54,7 +54,7 @@ async function getUserById(id){
 async function getUserByUsername(username){
     
   try {
-      const {rows: [user], } = await client.query(`
+      const {rows: [user] } = await client.query(`
       SELECT id, username 
       FROM users
       WHERE username = $1;
