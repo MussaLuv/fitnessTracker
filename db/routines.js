@@ -1,3 +1,4 @@
+
 const client = require("./client");
 
 const { mapRoutines } = require("./utils");
@@ -114,6 +115,7 @@ async function getPublicRoutinesByUser(user) {
   }
 }
 
+
 async function getPublicRoutinesByActivity() {
   try {
   } catch (error) {}
@@ -127,3 +129,4 @@ module.exports = {
   getPublicRoutinesByUser,
   getPublicRoutinesByActivity,
 };
+
