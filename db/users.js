@@ -1,4 +1,4 @@
-const client = require('./clinet');
+const client = require('./client');
 
 // inside of createUser({ username, password})
 async function createUser({ username, password }){
