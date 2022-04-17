@@ -5,7 +5,6 @@ const express = require("express");
 const server = express();
 
 const morgan = require("morgan");
-const bodyParser = require("body-parser");
 server.use(morgan("dev"));
 
 const apiRouter = require("./api");
@@ -15,7 +14,7 @@ const client = require("./db/client.js");
 
 server.use("*", (req, res, next) => {
   res.status(404);
-  res.send({ error: "Not Found" });
+  res.send({ error: "404" });
 });
 server.use((error, req, res, next) => {
   res.status(500);
@@ -24,5 +23,5 @@ server.use((error, req, res, next) => {
 
 server.listen(PORT, () => {
   client.connect();
-  console.log(`Listening on ${PORT}`);
+  console.log(`Listening to PORT: ${PORT}`);
 });
