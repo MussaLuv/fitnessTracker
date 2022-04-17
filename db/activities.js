@@ -29,7 +29,7 @@ async function attachActivitiesToRoutines(routines) {
   }
 }
 
-//fetches activity IDs
+
 async function getActivityById(id) {
     try {
         const { rows: [activity] } = await client.query(`
@@ -44,7 +44,7 @@ async function getActivityById(id) {
     }
 }
 
-//grabs all activities
+
 async function getAllActivities() {
     try {
         const { rows } = await client.query(`
@@ -58,14 +58,13 @@ async function getAllActivities() {
     }
 }
 
-//creates new activities
+
 async function createActivity({ name, description }) {
     try {
         const { rows: [activity] } = await client.query(`
-            INSERT INTO activities(name, description)
-            VALUES ($1, $2)
-            ON CONFLICT (name) DO NOTHING
-            RETURNING *;
+        INSERT INTO activities (name, description)
+        VALUES ($1, $2)
+        RETURNING *;
             `, [name, description]
         );
         return activity;
@@ -74,7 +73,7 @@ async function createActivity({ name, description }) {
     }
 }
 
-//updates names and descriptions of the activities without changing any IDs
+
 async function updateActivity({ id, name, description }) {
     try {
         const { rows: [activity] } = await client.query(`
