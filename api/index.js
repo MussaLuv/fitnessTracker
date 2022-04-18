@@ -14,11 +14,11 @@ const usersRouter = require("./users");
 
 apiRouter.get("/health", (req, res, next) => {
   try {
-      res.send({
-          message: "Still Alive",
-      });
-  } catch ({ name, message }) {
-      next({ name, message });
+    res.send({
+      message: "Still Alive",
+    });
+  } catch (error) {
+    next(error)
   }
 });
 
