@@ -2,31 +2,42 @@ const express = require("express");
 const { getPublicRoutinesByUser } = require("../db/routines");
 const { getUserByUsername, getUser, createUser } = require("../db/users");
 const { loginAuth } = require("./login");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET = "beQuiet" } = process.env;
 
 const usersRouter = express.Router();
 
-usersRouter.post("/register", async (req, res, next) => {
-  const { username, password } = req.body
+
+usersRouter.post("/register", async(req, res, next) => {
     try {
-        const userSet = await getUserByUsername(username)
+        const { username, password } = req.body;
+        const userSet = await getUserByUsername(username);
         if (userSet) {
             next({
                 name: 'userExists',
                 message: "username exsists"
             })
-        } if (password.length < 8) {
+        }else if (password.length < 8) {
             next({
                 name: 'passwordLengthMin',
                 message: "set your password longer than 8 characters"
             })
         } else {
-            const info = await createUser({ username, password })
-            res.send({info});
+          const user = await createUser({ username, password });
+          if (!user) {
+            next({
+              name: 'cantCreate',
+              message: 'Error in Registering',
+            });
+          } else {
+            const token = jwt.sign({id: user.id, username: user.username}, JWT_SECRET);
+            res.send({ user, message: "signed up", token });
+          }
         }
-    } catch(error){
-      next(error)
-    }
-});
+      } catch (error) {
+        next(error)
+      }
+    })
 
 usersRouter.post("/login", async (req, res, next) => {
   const { username, password } = req.body
