@@ -3,7 +3,7 @@ const { getPublicRoutinesByUser } = require("../db/routines");
 const { getUserByUsername, getUser, createUser } = require("../db/users");
 const { loginAuth } = require("./login");
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET = "beQuiet" } = process.env;
+const { JWT_SECRET = "neverTell" } = process.env;
 
 const usersRouter = express.Router();
 
@@ -41,17 +41,18 @@ usersRouter.post("/register", async(req, res, next) => {
 
 usersRouter.post("/login", async (req, res, next) => {
   const { username, password } = req.body
-    try {
-        const loginInfo = await getUser({ username, password })
-        if (loginInfo) {
-            res.send({ message: "Logged In", token: 'token' });
-        }
-        else {
-            next({
-                name: 'Login Info Error',
-                message: 'Username or Password is wrong'
-            });
-        }
+  try {
+    if (!username || !password) {
+      next({
+        message: "username or password does not match",
+      });
+    } else {
+      const user = await getUser({ username, password });
+      const token = jwt.sign(
+        { id: user.id, username: user.username }, JWT_SECRET
+      );
+      res.send({ user, token, message: "Logged in" });
+    }
       } catch (error) {
         next(error)
     }
@@ -69,10 +70,12 @@ usersRouter.get("/me", loginAuth, async (req, res, next) => {
 
 usersRouter.get("/:username/routines", async (req, res, next) => {
   const { username } = req.params
-    
+    try{
   const userRoutines = await getPublicRoutinesByUser({ username });
     res.send(userRoutines);
-});
+    }catch (error){
+    next(error);
+}});
 
 
 module.exports = usersRouter;
