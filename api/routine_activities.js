@@ -10,7 +10,9 @@ routineActivitiesRouter.patch("/:routineActivityId/", loginAuth, async (req, res
   try {
     const prevRoutine = await getRoutineActivityById(id);
     const nextRoutine = await getRoutineById(prevRoutine.routineId)
-    if (req.user.id === nextRoutine.creatorId) {
+    if(req.user.id != nextRoutine.creatorId) {
+      res.status(500).send(err)
+    } else {
       const routineActivity = await updateRoutineActivity({ id, count, duration });
       res.send(routineActivity);
     }
@@ -25,10 +27,11 @@ routineActivitiesRouter.delete("/:routineActivityId/", loginAuth, async (req, re
   try {
     const prevRoutine = await getRoutineActivityById(id);
     const nextRoutine = await getRoutineById(prevRoutine.routineId)
-    if (req.user.id === nextRoutine.creatorId) {
+    if(req.user.id != nextRoutine.creatorId) {
+      res.status(500).send(err)
+    }
       const routineActivity = await destroyRoutineActivity(id);
       res.send(routineActivity);
-    }
   } catch (error) {
     next(error);
   }
