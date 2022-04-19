@@ -1,4 +1,3 @@
-
 const client = require("./client");
 
 // inside of createUser({ username, password})
@@ -8,7 +7,6 @@ async function createUser({ username, password }) {
       rows: [user],
     } = await client.query(
       `
-
         INSERT INTO users(username, password)
         VALUES ($1, $2)
         RETURNING *;`,
@@ -22,7 +20,6 @@ async function createUser({ username, password }) {
   }
 }
 
-
 async function getUser({ username, password }) {
   try {
     const {
@@ -32,7 +29,6 @@ async function getUser({ username, password }) {
       SELECT * 
       FROM users
       WHERE username = $1;
-
       `,
       [username]
     );
@@ -44,7 +40,6 @@ async function getUser({ username, password }) {
     return user;
   } catch (error) {
     throw error;
-
   }
 }
 

@@ -1,59 +1,55 @@
-const express = require('express');
-const routine_activitiesRouter = express.Router();
-const { requireUser } = require('./utils');
-
+const express = require("express");
+const { getRoutineById } = require("../db/routines");
 const {
-    getRoutineActivityById,
-    getRoutineById,
-    updateRoutineActivity,
-    destroyRoutineActivity
-  } = require('../db');
-  
-  
-  routine_activitiesRouter.patch('/:routineActivityId', requireUser, async (req, res, next) => {
-     
-    const { count, duration  } = req.body
-    const { routineActivityId } = req.params
-    const id = routineActivityId
+  getRoutineActivityById,
+  updateRoutineActivity,
+  destroyRoutineActivity,
+} = require("../db/routine_activities");
+const { loginAuth } = require("./login");
+const routineActivitiesRouter = express.Router();
+
+routineActivitiesRouter.patch(
+  "/:routineActivityId/",
+  loginAuth,
+  async (req, res, next) => {
+    const { count, duration } = req.body;
+    const id = req.params.routineActivityId;
     try {
-      const routine_activity = await getRoutineActivityById(id)
-      const routine = await getRoutineById(routine_activity.routineId)
-      if (routine.creatorId === req.user.id) {
-      const updatedRoutine = await updateRoutineActivity({id, count, duration});
-      
-      res.send(updatedRoutine);
-    }else {
-      next({
-        name:"Not Authorized",
-        Message: "Not Authorized"
-      }
-      )}
-      } catch (error) {
-      next(error)
-    }
-  });
-    
-    
-    routine_activitiesRouter.delete('/:routineActivityId', requireUser, async (req, res, next) => {
-     
-      const { routineActivityId } = req.params
-      const id = routineActivityId
-      try {
-        const routine_activity = await getRoutineActivityById(id)
-        const routine = await getRoutineById(routine_activity.routineId)
-        if (routine.creatorId === req.user.id) {
-        const deletedRoutine = await destroyRoutineActivity(id);
-        
-        res.send(deletedRoutine);
-      }else {
-        next({
-          name:"Not Authorized",
-          Message: "Not Authorized"
-        }
-        )}
-        } catch (error) {
-        next(error)
-      }
+      const prevRoutine = await getRoutineActivityById(id);
+      const nextRoutine = await getRoutineById(prevRoutine.routineId);
+      if (req.user.id != nextRoutine.creatorId) {
+        res.status(500).send(err);
+      } else {
+        const routineActivity = await updateRoutineActivity({
+          id,
+          count,
+          duration,
         });
-  
-    module.exports = routine_activitiesRouter;
+        res.send(routineActivity);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+routineActivitiesRouter.delete(
+  "/:routineActivityId/",
+  loginAuth,
+  async (req, res, next) => {
+    const id = req.params.routineActivityId;
+    try {
+      const prevRoutine = await getRoutineActivityById(id);
+      const nextRoutine = await getRoutineById(prevRoutine.routineId);
+      if (req.user.id != nextRoutine.creatorId) {
+        res.status(500).send(err);
+      }
+      const routineActivity = await destroyRoutineActivity(id);
+      res.send(routineActivity);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+module.exports = routineActivitiesRouter;

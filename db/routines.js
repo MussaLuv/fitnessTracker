@@ -3,7 +3,6 @@ const { attachActivitiesToRoutines } = require("./activities");
 
 async function getRoutineById(id) {
   try {
-
     const {
       rows: [routine],
     } = await client.query(
@@ -60,9 +59,8 @@ async function getAllPublicRoutines() {
     `);
     return attachActivitiesToRoutines(routines);
   } catch (error) {
-    throw error
+    throw error;
   }
-
 }
 
 async function getAllPublicRoutines() {
@@ -80,12 +78,10 @@ async function getAllPublicRoutines() {
   }
 }
 
-
 async function getAllRoutinesByUser({ username }) {
   try {
     const { rows: routines } = await client.query(
       `
-
       SELECT routines.*, users.username 
       AS "creatorName", users.id 
       FROM routines
@@ -100,7 +96,6 @@ async function getAllRoutinesByUser({ username }) {
     throw error;
   }
 }
-
 
 async function getPublicRoutinesByUser({ username }) {
   try {
@@ -120,7 +115,6 @@ async function getPublicRoutinesByUser({ username }) {
     throw error;
   }
 }
-
 
 async function createRoutine({ creatorId, isPublic, name, goal }) {
   try {
@@ -161,13 +155,11 @@ async function getPublicRoutinesByActivity({ id }) {
   }
 }
 
-
 const updateRoutine = async ({ id, isPublic, name, goal }) => {
   try {
     if (isPublic) {
       await client.query(
         `
-
               UPDATE routines
               SET "isPublic" = $1
               WHERE id = $2
@@ -180,7 +172,6 @@ const updateRoutine = async ({ id, isPublic, name, goal }) => {
     if (name) {
       await client.query(
         `
-
               UPDATE routines
               SET name = $1
               WHERE id = $2
@@ -193,12 +184,10 @@ const updateRoutine = async ({ id, isPublic, name, goal }) => {
     if (goal) {
       await client.query(
         `
-
               UPDATE routines
               SET goal = $1
               WHERE id = $2
               RETURNING *;
-
       `,
         [goal, id]
       );
@@ -237,7 +226,6 @@ async function destroyRoutine(id) {
         RETURNING *
     `,
       [id]
-
     );
   } catch (error) {
     throw error;
@@ -256,4 +244,3 @@ module.exports = {
   updateRoutine,
   destroyRoutine,
 };
-
